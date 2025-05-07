@@ -40,6 +40,8 @@ Module Odoo 18 pour la gestion complète de parc informatique destiné aux MSP (
 - Attribution des tickets aux techniciens selon compétences
 - Historique complet des interventions
 
+![Vue des tickets d'assistance](./screenshot/TicketResult.png)
+
 ### Portail client
 - Accès sécurisé pour les clients à leurs équipements
 - Consultation des contrats et factures

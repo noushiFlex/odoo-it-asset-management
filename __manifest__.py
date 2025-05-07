@@ -29,7 +29,7 @@
         'data/sequence.xml',
         'data/cron.xml',
         'data/mail_templates.xml',
-        # 'data/demo.xml',  
+        'data/demo.xml',  # Ajoutez cette ligne
         'views/menu.xml',
         'views/client_views.xml',  
         'views/equipement_views.xml',
@@ -49,7 +49,7 @@
         'views/site_client_views.xml',
     ],
     'demo': [
-        # 'data/demo.xml',
+        'data/demo.xml',
     ],
     'installable': True,
     'application': True,
