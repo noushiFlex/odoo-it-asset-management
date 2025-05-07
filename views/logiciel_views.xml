@@ -1,0 +1,55 @@
+<odoo>
+    <!-- Vue form pour les logiciels -->
+    <record id="view_logiciel_form" model="ir.ui.view">
+        <field name="name">parc.logiciel.form</field>
+        <field name="model">parc.logiciel</field>
+        <field name="arch" type="xml">
+            <form string="Logiciel">
+                <sheet>
+                    <group>
+                        <field name="name"/>
+                        <field name="editeur"/>
+                        <field name="version"/>
+                        <field name="type"/>
+                    </group>
+                    <group>
+                        <field name="description"/>
+                    </group>
+                    <notebook>
+                        <page string="Licences">
+                            <field name="licence_ids"/>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- Vue liste pour les logiciels -->
+    <record id="view_logiciel_tree" model="ir.ui.view">
+        <field name="name">parc.logiciel.tree</field>
+        <field name="model">parc.logiciel</field>
+        <field name="arch" type="xml">
+            <list string="Logiciels">
+                <field name="name"/>
+                <field name="editeur"/>
+                <field name="version"/>
+                <field name="type"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- Action pour les logiciels -->
+    <record id="action_logiciel" model="ir.actions.act_window">
+        <field name="name">Logiciels</field>
+        <field name="res_model">parc.logiciel</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+    <!-- Menu pour les logiciels -->
+    <menuitem id="menu_parc_logiciels"
+              name="Logiciels"
+              parent="menu_parc_equipements"
+              action="action_logiciel"
+              sequence="20"/>
+</odoo>

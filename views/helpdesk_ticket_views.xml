@@ -1,0 +1,130 @@
+<odoo>
+    <!-- Vue kanban améliorée pour les tickets -->
+    <record id="view_helpdesk_ticket_kanban_parc" model="ir.ui.view">
+        <field name="name">helpdesk.ticket.kanban.parc</field>
+        <field name="model">helpdesk.ticket</field>
+        <field name="arch" type="xml">
+            <kanban class="o_kanban_dashboard" default_group_by="stage_id">
+                <field name="name"/>
+                <field name="partner_id"/>
+                <field name="equipement_id"/>
+                <field name="contrat_id"/>
+                <field name="priority"/>
+                <field name="user_id"/>
+                <field name="stage_id"/>
+                <field name="color"/>
+                <templates>
+                    <t t-name="card">
+                        <div t-attf-class="oe_kanban_card oe_kanban_global_click #{record.priority.raw_value == '3' ? 'bg-danger-light' : (record.priority.raw_value == '2' ? 'bg-warning-light' : '')}">
+                            <div class="oe_kanban_content">
+                                <div class="o_kanban_record_top mb-0">
+                                    <div class="o_kanban_record_headings">
+                                        <strong class="o_kanban_record_title">
+                                            <span><field name="name"/></span>
+                                        </strong>
+                                        <div t-if="record.equipement_id.raw_value" class="text-muted">
+                                            <span>Équipement: <field name="equipement_id"/></span>
+                                        </div>
+                                    </div>
+                                    <div class="o_dropdown_kanban dropdown">
+                                        <a role="button" class="dropdown-toggle o-no-caret btn" data-toggle="dropdown" href="#" aria-label="Dropdown menu" title="Dropdown menu">
+                                            <span class="fa fa-ellipsis-v"/>
+                                        </a>
+                                        <div class="dropdown-menu" role="menu">
+                                            <a role="menuitem" type="edit" class="dropdown-item">Modifier</a>
+                                            <a role="menuitem" type="object" name="create_maintenance" class="dropdown-item">Créer maintenance</a>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="o_kanban_record_body">
+                                    <div><field name="partner_id"/></div>
+                                    <div t-if="record.contrat_id.raw_value" class="text-muted">
+                                        <span>Contrat: <field name="contrat_id"/></span>
+                                    </div>
+                                    <div class="mt-2">
+                                        <span t-attf-class="badge #{record.priority.raw_value == '3' ? 'bg-danger' : (record.priority.raw_value == '2' ? 'bg-warning' : 'bg-success')}">
+                                            <t t-if="record.priority.raw_value == '3'">Urgent</t>
+                                            <t t-elif="record.priority.raw_value == '2'">Élevé</t>
+                                            <t t-elif="record.priority.raw_value == '1'">Normal</t>
+                                            <t t-else="">Bas</t>
+                                        </span>
+                                    </div>
+                                </div>
+                                <div class="o_kanban_record_bottom">
+                                    <div class="oe_kanban_bottom_left">
+                                        <span>Ticket #<field name="id"/></span>
+                                    </div>
+                                    <div class="oe_kanban_bottom_right">
+                                        <field name="user_id" widget="many2one_avatar_user"/>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </t>
+                </templates>
+            </kanban>
+        </field>
+    </record>
+
+    <!-- Vue recherche améliorée pour les tickets liés aux équipements -->
+    <record id="view_helpdesk_ticket_search_parc" model="ir.ui.view">
+        <field name="name">helpdesk.ticket.search.parc</field>
+        <field name="model">helpdesk.ticket</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name"/>
+                <field name="partner_id"/>
+                <field name="equipement_id"/>
+                <field name="contrat_id"/>
+                <separator/>
+                <filter string="Avec équipement" name="with_equipment" domain="[('equipement_id', '!=', False)]"/>
+                <filter string="Sous contrat" name="with_contract" domain="[('contrat_id', '!=', False)]"/>
+                <filter string="Urgents" name="high_priority" domain="[('priority', '=', '3')]"/>
+                <group expand="0" string="Group By">
+                    <filter string="Équipement" name="equipement" context="{'group_by': 'equipement_id'}"/>
+                    <filter string="Client" name="partner" context="{'group_by': 'partner_id'}"/>
+                    <filter string="Contrat" name="contrat" context="{'group_by': 'contrat_id'}"/>
+                    <filter string="Assigné à" name="user" context="{'group_by': 'user_id'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <!-- Vue analyse pour les tickets par équipement -->
+    <record id="view_helpdesk_ticket_pivot_parc" model="ir.ui.view">
+        <field name="name">helpdesk.ticket.pivot.parc</field>
+        <field name="model">helpdesk.ticket</field>
+        <field name="arch" type="xml">
+            <pivot string="Analyse des tickets">
+                <field name="equipement_id" type="row"/>
+                <field name="stage_id" type="col"/>
+                <field name="id" type="measure"/>
+            </pivot>
+        </field>
+    </record>
+
+    <!-- Action principale pour les tickets liés aux équipements -->
+    <record id="action_helpdesk_ticket_parc" model="ir.actions.act_window">
+        <field name="name">Tickets d'assistance</field>
+        <field name="res_model">helpdesk.ticket</field>
+        <field name="view_mode">kanban,list,form,pivot</field> <!-- Changer tree en list -->
+        <field name="domain">[('equipement_id', '!=', False)]</field>
+        <field name="context">{'search_default_with_equipment': 1}</field>
+        <field name="search_view_id" ref="view_helpdesk_ticket_search_parc"/>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Aucun ticket lié aux équipements du parc
+            </p>
+            <p>
+                Les tickets d'assistance liés aux équipements du parc informatique apparaîtront ici.
+            </p>
+        </field>
+    </record>
+
+    <!-- Menu pour accéder aux tickets dans le module parc informatique -->
+    <menuitem id="menu_parc_helpdesk_tickets"
+              name="Tickets d'assistance"
+              parent="menu_parc_maintenances"
+              action="action_helpdesk_ticket_parc"
+              sequence="20"/>
+</odoo>

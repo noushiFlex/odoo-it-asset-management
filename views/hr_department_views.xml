@@ -1,0 +1,22 @@
+<odoo>
+    <!-- Création de notre propre action pour les départements -->
+    <record id="action_department_view" model="ir.actions.act_window">
+        <field name="name">Départements</field>
+        <field name="res_model">hr.department</field>
+        <field name="view_mode">list,form</field>
+        <field name="domain" eval="[]"/>  <!-- Utiliser 'eval' au lieu d'une chaîne -->
+        <field name="context" eval="{}"/>  <!-- Utiliser 'eval' au lieu d'une chaîne -->
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Créez votre premier département
+            </p>
+        </field>
+    </record>
+
+    <!-- Menu pour accéder aux départements -->
+    <menuitem id="menu_hr_department"
+              name="Départements"
+              parent="menu_parc_configuration"
+              action="action_department_view"
+              sequence="10"/>
+</odoo>

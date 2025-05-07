@@ -1,0 +1,55 @@
+<!-- views/equipement_views.xml -->
+<odoo>
+    <record id="vue_form_parc_equipement" model="ir.ui.view">
+        <field name="name">parc.equipement.form</field>
+        <field name="model">parc.equipement</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <group>
+                        <field name="name"/>
+                        <field name="numero_serie"/>
+                        <field name="type_equipement"/>
+                        <field name="client_id"/>
+                        <field name="utilisateur_id"/>
+                    </group>
+                    <group>
+                        <field name="date_achat"/>
+                        <field name="fin_garantie"/>
+                        <field name="etat"/>
+                    </group>
+                    <notebook>
+                        <page string="Historique de Maintenance">
+                            <field name="historique_maintenance_ids"/>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- Ajout de la vue liste -->
+    <record id="vue_tree_parc_equipement" model="ir.ui.view">
+        <field name="name">parc.equipement.tree</field>
+        <field name="model">parc.equipement</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="name"/>
+                <field name="type_equipement"/>
+                <field name="client_id"/>
+                <field name="numero_serie"/>
+                <field name="etat"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- Action -->
+    <record id="action_parc_equipement" model="ir.actions.act_window">
+        <field name="name">Équipements</field>
+        <field name="res_model">parc.equipement</field>
+        <field name="view_mode">list,form</field>  <!-- Changed from tree,form to list,form -->
+    </record>
+
+    <!-- Menu Item -->
+    <menuitem id="menu_parc_equipement_liste" name="Liste des équipements" parent="menu_parc_equipements" action="action_parc_equipement"/>
+</odoo>

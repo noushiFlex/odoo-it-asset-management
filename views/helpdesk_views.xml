@@ -1,0 +1,26 @@
+<odoo>
+    <record id="view_helpdesk_ticket_form_inherit" model="ir.ui.view">
+        <field name="name">helpdesk.ticket.form.parc.inherit</field>
+        <field name="model">helpdesk.ticket</field>
+        <field name="inherit_id" ref="helpdesk.helpdesk_ticket_view_form"/>
+        <field name="arch" type="xml">
+            <field name="partner_id" position="after">
+                <field name="objet_concerne"/>
+                <field name="contrat_id" domain="[('client_id', '=', partner_id)]"/>
+                <!-- Cacher les anciens champs qui sont maintenant calculés -->
+                <field name="equipement_id" invisible="1"/>
+                <field name="licence_id" invisible="1"/>
+            </field>
+            <xpath expr="//notebook" position="inside">
+                <page string="Maintenance" invisible="not objet_concerne">
+                    <group>
+                        <field name="historique_maintenance_ids" readonly="1"/>
+                    </group>
+                    <group>
+                        <button name="create_maintenance" string="Créer une maintenance" type="object" class="oe_highlight"/>
+                    </group>
+                </page>
+            </xpath>
+        </field>
+    </record>
+</odoo>

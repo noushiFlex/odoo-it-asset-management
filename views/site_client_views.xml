@@ -1,0 +1,65 @@
+<odoo>
+    <!-- Vue form pour les sites client -->
+    <record id="view_site_client_form" model="ir.ui.view">
+        <field name="name">parc.site.client.form</field>
+        <field name="model">parc.site.client</field>
+        <field name="arch" type="xml">
+            <form string="Site client">
+                <sheet>
+                    <group>
+                        <field name="name"/>
+                        <field name="client_id"/>
+                        <field name="adresse"/>
+                    </group>
+                    <group>
+                        <field name="code_postal"/>
+                        <field name="ville"/>
+                        <field name="pays_id"/>
+                    </group>
+                    <group>
+                        <field name="contact_id"/>
+                        <field name="telephone"/>
+                        <field name="email"/>
+                    </group>
+                    <notebook>
+                        <page string="Équipements">
+                            <field name="equipement_ids"/>
+                        </page>
+                        <page string="Notes">
+                            <field name="notes"/>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- Vue liste pour les sites client -->
+    <record id="view_site_client_tree" model="ir.ui.view">
+        <field name="name">parc.site.client.tree</field>
+        <field name="model">parc.site.client</field>
+        <field name="arch" type="xml">
+            <list string="Sites client">
+                <field name="name"/>
+                <field name="client_id"/>
+                <field name="ville"/>
+                <field name="contact_id"/>
+                <field name="telephone"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- Action pour les sites client -->
+    <record id="action_site_client" model="ir.actions.act_window">
+        <field name="name">Sites client</field>
+        <field name="res_model">parc.site.client</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+    <!-- Menu pour les sites client -->
+    <menuitem id="menu_parc_sites_client"
+              name="Sites client"
+              parent="menu_parc_configuration"
+              action="action_site_client"
+              sequence="30"/>
+</odoo>

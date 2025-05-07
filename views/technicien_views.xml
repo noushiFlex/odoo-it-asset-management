@@ -1,0 +1,135 @@
+<odoo>
+    <!-- Vue liste spécifique pour les techniciens -->
+    <record id="view_technicien_tree" model="ir.ui.view">
+        <field name="name">hr.employee.technicien.tree</field>
+        <field name="model">hr.employee</field>
+        <field name="arch" type="xml">
+            <list string="Techniciens">
+                <field name="name"/>
+                <field name="work_phone"/>
+                <field name="mobile_phone"/>
+                <field name="work_email"/>
+                <field name="equipement_count"/>
+                <field name="department_id"/>
+                <field name="company_id" groups="base.group_multi_company"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- Vue formulaire spécifique pour les techniciens -->
+    <record id="view_technicien_form" model="ir.ui.view">
+        <field name="name">hr.employee.technicien.form</field>
+        <field name="model">hr.employee</field>
+        <field name="arch" type="xml">
+            <form string="Technicien">
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="action_view_technicien_maintenances" 
+                                type="object" 
+                                class="oe_stat_button" 
+                                icon="fa-wrench"
+                                invisible="equipement_count == 0">
+                            <field name="equipement_count" string="Interventions" widget="statinfo"/>
+                        </button>
+                    </div>
+                    <field name="image_1920" widget="image" class="oe_avatar" options="{'preview_image': 'image_128'}"/>
+                    <div class="oe_title">
+                        <h1>
+                            <field name="name" placeholder="Nom du technicien"/>
+                        </h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="work_phone"/>
+                            <field name="mobile_phone"/>
+                            <field name="work_email"/>
+                            <label for="department_id"/>
+                            <div class="o_row">
+                                <field name="department_id" class="o_field_widget"/>
+                                <button 
+                                    string="Créer" 
+                                    icon="fa-plus" 
+                                    type="action" 
+                                    name="%(action_department_view)d" 
+                                    context="{'default_name': 'Nouveau département'}" 
+                                    class="btn-link"/>
+                            </div>
+                            <label for="poste_technique_id"/>
+                            <div class="o_row">
+                                <field name="poste_technique_id" class="o_field_widget"/>
+                                <button 
+                                    string="Créer" 
+                                    icon="fa-plus" 
+                                    type="action" 
+                                    name="%(action_hr_poste_technique)d" 
+                                    context="{'default_name': 'Nouveau poste'}" 
+                                    class="btn-link"/>
+                            </div>
+                        </group>
+                        <group>
+                            <field name="certifications" placeholder="Ex: CISSP, A+, CCNA..."/>
+                            <field name="specialite" placeholder="Ex: Windows, Linux, Réseau..."/>
+                            <field name="company_id" groups="base.group_multi_company"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Compétences techniques">
+                            <group>
+                                <field name="notes" placeholder="Compétences, certifications, spécialités..."/>
+                            </group>
+                        </page>
+                        <page string="Maintenances effectuées">
+                            <field name="maintenance_ids"/>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+    
+    <!-- Vue recherche pour les techniciens -->
+    <record id="view_technicien_filter" model="ir.ui.view">
+        <field name="name">hr.employee.technicien.filter</field>
+        <field name="model">hr.employee</field>
+        <field name="arch" type="xml">
+            <search string="Recherche de techniciens">
+                <field name="name" string="Technicien"/>
+                <field name="department_id"/>
+                <separator/>
+                <filter string="Avec interventions" name="with_maintenance" domain="[('maintenance_ids', '!=', False)]"/>
+                <group expand="0" string="Grouper par">
+                    <filter string="Département" name="department" context="{'group_by': 'department_id'}"/>
+                    <filter string="Entreprise" name="company" context="{'group_by': 'company_id'}" groups="base.group_multi_company"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <!-- Action pour accéder à la liste des techniciens -->
+    <record id="action_techniciens" model="ir.actions.act_window">
+        <field name="name">Techniciens</field>
+        <field name="res_model">hr.employee</field>
+        <field name="view_mode">list,form</field>
+        <field name="domain">[]</field>
+        <field name="context">{'search_default_with_maintenance': 0}</field>
+        <field name="view_ids" eval="[(5, 0, 0), 
+                                     (0, 0, {'view_mode': 'list', 'view_id': ref('view_technicien_tree')}),
+                                     (0, 0, {'view_mode': 'form', 'view_id': ref('view_technicien_form')})]"/>
+        <field name="search_view_id" ref="view_technicien_filter"/>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Créez votre premier technicien
+            </p>
+            <p>
+                Ajoutez vos techniciens pour suivre leurs interventions sur les équipements.
+            </p>
+        </field>
+    </record>
+
+    <!-- Menu pour les techniciens -->
+    <menuitem id="menu_parc_techniciens" 
+              name="Techniciens" 
+              parent="menu_parc_maintenances" 
+              action="action_techniciens" 
+              sequence="10"/>
+</odoo>

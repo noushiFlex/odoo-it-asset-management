@@ -1,0 +1,24 @@
+<odoo>
+    <data>
+        <!-- Départements spécifiques pour l'informatique -->
+        <record id="department_it_support" model="hr.department">
+            <field name="name">Support Informatique</field>
+            <field name="complete_name">Support Informatique</field>
+        </record>
+        
+        <record id="department_it_network" model="hr.department">
+            <field name="name">Réseaux et Infrastructure</field>
+            <field name="complete_name">Réseaux et Infrastructure</field>
+        </record>
+        
+        <record id="department_it_development" model="hr.department">
+            <field name="name">Développement</field>
+            <field name="complete_name">Développement</field>
+        </record>
+        
+        <record id="department_it_security" model="hr.department">
+            <field name="name">Sécurité Informatique</field>
+            <field name="complete_name">Sécurité Informatique</field>
+        </record>
+    </data>
+</odoo>

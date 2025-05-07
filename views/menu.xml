@@ -1,0 +1,13 @@
+<odoo>
+    <!-- Menu principal -->
+    <menuitem id="menu_parc_informatique" name="Parc Informatique" web_icon="gestion_parc_informatique,static/description/icon.png"/>
+    
+    <!-- Sous-menus principaux -->
+    <menuitem id="menu_parc_dashboard" name="Tableau de bord" parent="menu_parc_informatique" sequence="1"/>
+    <menuitem id="menu_parc_equipements" name="Équipements" parent="menu_parc_informatique" sequence="10"/>
+    <menuitem id="menu_parc_contrats" name="Contrats" parent="menu_parc_informatique" sequence="20"/>
+    <menuitem id="menu_parc_maintenances" name="Maintenances" parent="menu_parc_informatique" sequence="30"/>
+    
+    <!-- Ajout du menu Configuration -->
+    <menuitem id="menu_parc_configuration" name="Configuration" parent="menu_parc_informatique" sequence="100"/>
+</odoo>

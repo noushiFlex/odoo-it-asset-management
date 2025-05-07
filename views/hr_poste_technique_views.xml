@@ -1,0 +1,85 @@
+<odoo>
+    <!-- Vue formulaire pour les postes techniques -->
+    <record id="view_hr_poste_technique_form" model="ir.ui.view">
+        <field name="name">hr.poste.technique.form</field>
+        <field name="model">hr.poste.technique</field>
+        <field name="arch" type="xml">
+            <form string="Poste Technique">
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="name"/>
+                            <field name="niveau"/>
+                            <field name="sequence"/>
+                            <field name="active" widget="boolean_toggle"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Description">
+                            <field name="description" placeholder="Description détaillée du poste..."/>
+                        </page>
+                        <page string="Compétences requises">
+                            <field name="competences_requises" placeholder="Liste des compétences nécessaires pour ce poste..."/>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- Vue liste pour les postes techniques -->
+    <record id="view_hr_poste_technique_tree" model="ir.ui.view">
+        <field name="name">hr.poste.technique.tree</field>
+        <field name="model">hr.poste.technique</field>
+        <field name="arch" type="xml">
+            <list string="Postes Techniques">
+                <field name="sequence" widget="handle"/>
+                <field name="name"/>
+                <field name="niveau"/>
+                <field name="active" widget="boolean_toggle"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- Vue recherche pour les postes techniques -->
+    <record id="view_hr_poste_technique_search" model="ir.ui.view">
+        <field name="name">hr.poste.technique.search</field>
+        <field name="model">hr.poste.technique</field>
+        <field name="arch" type="xml">
+            <search string="Rechercher un poste technique">
+                <field name="name"/>
+                <filter string="Junior" name="junior" domain="[('niveau', '=', 'junior')]"/>
+                <filter string="Intermédiaire" name="intermediaire" domain="[('niveau', '=', 'intermediaire')]"/>
+                <filter string="Senior" name="senior" domain="[('niveau', '=', 'senior')]"/>
+                <filter string="Expert" name="expert" domain="[('niveau', '=', 'expert')]"/>
+                <filter string="Inactifs" name="inactifs" domain="[('active', '=', False)]"/>
+                <group expand="0" string="Grouper par">
+                    <filter string="Niveau" name="niveau" context="{'group_by': 'niveau'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <!-- Action pour les postes techniques -->
+    <record id="action_hr_poste_technique" model="ir.actions.act_window">
+        <field name="name">Postes Techniques</field>
+        <field name="res_model">hr.poste.technique</field>
+        <field name="view_mode">list,form</field>
+        <field name="search_view_id" ref="view_hr_poste_technique_search"/>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Créez votre premier poste technique
+            </p>
+            <p>
+                Définissez les différents postes techniques de vos employés.
+            </p>
+        </field>
+    </record>
+
+    <!-- Menu pour les postes techniques -->
+    <menuitem id="menu_hr_poste_technique"
+              name="Postes Techniques"
+              parent="menu_parc_configuration" 
+              action="action_hr_poste_technique"
+              sequence="20"/>
+</odoo>

@@ -1,0 +1,79 @@
+<odoo>
+    <!-- Form View -->
+    <record id="vue_form_parc_contrat_service" model="ir.ui.view">
+        <field name="name">parc.contrat.service.form</field>
+        <field name="model">parc.contrat.service</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <button name="action_generer_facture" string="Créer facture" type="object" class="oe_highlight"/>
+                    <button name="action_convert_to_subscription" string="Créer commande récurrente" type="object" class="oe_highlight"/>
+                    <button name="action_envoyer_notification_expiration" string="Envoyer notification d'expiration" type="object" 
+                            invisible="not date_fin"
+                            groups="gestion_parc_informatique.group_parc_responsable" 
+                            class="btn-warning"/>
+                </header>
+                <sheet>
+                    <group>
+                        <field name="name"/>
+                        <field name="client_id"/>
+                        <field name="date_debut"/>
+                        <field name="date_fin"/>
+                        <field name="periodicite_facturation"/>
+                        <field name="montant"/>
+                        <field name="derniere_facture"/>
+                    </group>
+                    <notebook>
+                        <page string="Équipements couverts">
+                            <field name="equipements_ids"/>
+                        </page>
+                    </notebook>
+                </sheet>
+                <div class="oe_chatter">
+                    <field name="message_follower_ids"/>
+                    <field name="activity_ids"/>
+                    <field name="message_ids"/>
+                </div>
+            </form>
+        </field>
+    </record>
+
+    <!-- List View (anciennement Tree) -->
+    <record id="vue_tree_parc_contrat_service" model="ir.ui.view">
+        <field name="name">parc.contrat.service.tree</field>
+        <field name="model">parc.contrat.service</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="name"/>
+                <field name="client_id"/>
+                <field name="date_debut"/>
+                <field name="date_fin"/>
+                <field name="periodicite_facturation"/>
+                <field name="montant"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- Action -->
+    <record id="action_parc_contrat_service" model="ir.actions.act_window">
+        <field name="name">Contrats de Service</field>
+        <field name="res_model">parc.contrat.service</field>
+        <field name="view_mode">list,form</field>  <!-- Changed from tree,form to list,form -->
+    </record>
+
+    <!-- Menu Item -->
+    <menuitem id="menu_parc_contrats_service" name="Contrats de Service" parent="menu_parc_contrats" action="action_parc_contrat_service"/>
+
+    <!-- Action serveur pour créer une facture depuis le menu Actions -->
+    <record id="action_server_contrat_generer_facture" model="ir.actions.server">
+        <field name="name">Créer une facture</field>
+        <field name="model_id" ref="model_parc_contrat_service"/>
+        <field name="binding_model_id" ref="model_parc_contrat_service"/>
+        <field name="binding_view_types">form,list</field>
+        <field name="state">code</field>
+        <field name="code">
+if records:
+    action = records.action_generer_facture()
+    </field>
+    </record>
+</odoo>

@@ -1,0 +1,97 @@
+<odoo>
+    <data>
+        <!-- Catégorie de sécurité -->
+        <record id="module_category_gestion_parc" model="ir.module.category">
+            <field name="name">Gestion Parc Informatique</field>
+            <field name="description">Catégorie pour la gestion du parc informatique</field>
+            <field name="sequence">20</field>
+        </record>
+
+        <!-- Groupe pour les techniciens -->
+        <record id="group_parc_technicien" model="res.groups">
+            <field name="name">Technicien</field>
+            <field name="category_id" ref="module_category_gestion_parc"/>
+            <field name="comment">Les techniciens peuvent voir et effectuer des maintenances</field>
+        </record>
+
+        <!-- Groupe pour les responsables -->
+        <record id="group_parc_responsable" model="res.groups">
+            <field name="name">Responsable</field>
+            <field name="category_id" ref="module_category_gestion_parc"/>
+            <field name="implied_ids" eval="[(4, ref('group_parc_technicien'))]"/>
+            <field name="comment">Les responsables ont accès à toutes les fonctionnalités</field>
+            <field name="users" eval="[(4, ref('base.user_root')), (4, ref('base.user_admin'))]"/>
+        </record>
+
+        <!-- Règle d'accès: les techniciens ne peuvent voir que leurs propres maintenances -->
+        <record id="rule_maintenance_technicien" model="ir.rule">
+            <field name="name">Maintenance: Les techniciens voient leurs interventions</field>
+            <field name="model_id" ref="model_parc_maintenance"/>
+            <field name="domain_force">[('technicien_id.user_id', '=', user.id)]</field>
+            <field name="groups" eval="[(4, ref('group_parc_technicien'))]"/>
+            <field name="perm_read" eval="True"/>
+            <field name="perm_write" eval="True"/>
+            <field name="perm_create" eval="True"/>
+            <field name="perm_unlink" eval="False"/>
+        </record>
+
+        <!-- Règle d'accès: les responsables voient toutes les maintenances -->
+        <record id="rule_maintenance_responsable" model="ir.rule">
+            <field name="name">Maintenance: Les responsables voient tout</field>
+            <field name="model_id" ref="model_parc_maintenance"/>
+            <field name="domain_force">[(1, '=', 1)]</field>
+            <field name="groups" eval="[(4, ref('group_parc_responsable'))]"/>
+            <field name="perm_read" eval="True"/>
+            <field name="perm_write" eval="True"/>
+            <field name="perm_create" eval="True"/>
+            <field name="perm_unlink" eval="True"/>
+        </record>
+
+        <record id="rule_helpdesk_ticket_portal_create" model="ir.rule">
+            <field name="name">Portal Users can create tickets</field>
+            <field name="model_id" ref="helpdesk.model_helpdesk_ticket"/>
+            <field name="domain_force">[('partner_id', '=', user.partner_id.id)]</field>
+            <field name="groups" eval="[(4, ref('base.group_portal'))]"/>
+            <field name="perm_read" eval="True"/>
+            <field name="perm_write" eval="True"/>
+            <field name="perm_create" eval="True"/>
+            <field name="perm_unlink" eval="False"/>
+        </record>
+
+        <!-- Règle d'accès pour les équipements des utilisateurs du portail -->
+        <record id="rule_equipement_portal" model="ir.rule">
+            <field name="name">Les utilisateurs du portail ne voient que leurs propres équipements</field>
+            <field name="model_id" ref="model_parc_equipement"/>
+            <field name="domain_force">[('client_id', '=', user.partner_id.id)]</field>
+            <field name="groups" eval="[(4, ref('base.group_portal'))]"/>
+            <field name="perm_read" eval="True"/>
+            <field name="perm_write" eval="False"/>
+            <field name="perm_create" eval="False"/>
+            <field name="perm_unlink" eval="False"/>
+        </record>
+
+        <!-- Règle d'accès pour les contrats des utilisateurs du portail -->
+        <record id="rule_contrat_portal" model="ir.rule">
+            <field name="name">Les utilisateurs du portail ne voient que leurs propres contrats</field>
+            <field name="model_id" ref="model_parc_contrat_service"/>
+            <field name="domain_force">[('client_id', '=', user.partner_id.id)]</field>
+            <field name="groups" eval="[(4, ref('base.group_portal'))]"/>
+            <field name="perm_read" eval="True"/>
+            <field name="perm_write" eval="False"/>
+            <field name="perm_create" eval="False"/>
+            <field name="perm_unlink" eval="False"/>
+        </record>
+
+        <!-- Règle d'accès pour les licences des utilisateurs du portail -->
+        <record id="rule_licence_portal" model="ir.rule">
+            <field name="name">Les utilisateurs du portail ne voient que leurs propres licences</field>
+            <field name="model_id" ref="model_parc_licence"/>
+            <field name="domain_force">[('client_id', '=', user.partner_id.id)]</field>
+            <field name="groups" eval="[(4, ref('base.group_portal'))]"/>
+            <field name="perm_read" eval="True"/>
+            <field name="perm_write" eval="False"/>
+            <field name="perm_create" eval="False"/>
+            <field name="perm_unlink" eval="False"/>
+        </record>
+    </data>
+</odoo>

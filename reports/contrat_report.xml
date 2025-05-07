@@ -1,0 +1,60 @@
+<odoo>
+    <record id="action_report_contrat" model="ir.actions.report">
+        <field name="name">Contrat de Service</field>
+        <field name="model">parc.contrat.service</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">gestion_parc_informatique.report_contrat_document</field>
+        <field name="report_file">gestion_parc_informatique.report_contrat</field>
+        <field name="print_report_name">'Contrat - %s' % (object.name)</field>
+        <field name="binding_model_id" ref="model_parc_contrat_service"/>
+        <field name="binding_type">report</field>
+    </record>
+
+    <template id="report_contrat_document">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="doc">
+                <t t-call="web.external_layout">
+                    <div class="page">
+                        <h2>Contrat de Service</h2>
+                        <div class="row mt32 mb32">
+                            <div class="col-6">
+                                <p><strong>Client:</strong> <span t-field="doc.client_id.name"/></p>
+                                <p><strong>Référence:</strong> <span t-field="doc.name"/></p>
+                            </div>
+                            <div class="col-6">
+                                <p><strong>Date de début:</strong> <span t-field="doc.date_debut"/></p>
+                                <p t-if="doc.date_fin"><strong>Date de fin:</strong> <span t-field="doc.date_fin"/></p>
+                            </div>
+                        </div>
+                        <h3>Modalités</h3>
+                        <div class="row">
+                            <div class="col-12">
+                                <p><strong>Périodicité de facturation:</strong> <span t-field="doc.periodicite_facturation"/></p>
+                                <p><strong>Montant HT:</strong> <span t-field="doc.montant"/> €</p>
+                            </div>
+                        </div>
+                        <h3>Équipements couverts</h3>
+                        <table class="table table-sm">
+                            <thead>
+                                <tr>
+                                    <th>Nom</th>
+                                    <th>Type</th>
+                                    <th>Numéro de série</th>
+                                    <th>État</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr t-foreach="doc.equipements_ids" t-as="equipement">
+                                    <td><span t-field="equipement.name"/></td>
+                                    <td><span t-field="equipement.type_equipement"/></td>
+                                    <td><span t-field="equipement.numero_serie"/></td>
+                                    <td><span t-field="equipement.etat"/></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </t>
+            </t>
+        </t>
+    </template>
+</odoo>

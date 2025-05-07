@@ -1,0 +1,13 @@
+# Explication du fonctionnement du module de gestion de maintenance
+
+## Structure générale
+
+Le module de gestion de maintenance permet de suivre les interventions techniques sur les équipements informatiques. Il est construit autour du modèle `parc.maintenance` qui enregistre toutes les informations pertinentes concernant une intervention.
+
+## Fonctionnalités principales
+
+### 1. Référencement automatique
+
+Chaque maintenance reçoit automatiquement une référence unique générée par une séquence:
+```python
+name = fields.Char('Référence', required=True, default=lambda self: self.env['ir.sequence'].next_by_code('parc.maintenance') or 'MAINT0001')

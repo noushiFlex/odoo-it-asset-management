@@ -1,0 +1,21 @@
+<odoo>
+    <data noupdate="1">
+        <!-- Séquence pour les contrats -->
+        <record id="sequence_parc_contrat" model="ir.sequence">
+            <field name="name">Séquence Contrats</field>
+            <field name="code">parc.contrat.service</field>
+            <field name="prefix">CNT</field>
+            <field name="padding">4</field>
+            <field name="company_id" eval="False"/>
+        </record>
+
+        <!-- Séquence pour les maintenances -->
+        <record id="sequence_parc_maintenance" model="ir.sequence">
+            <field name="name">Séquence Maintenances</field>
+            <field name="code">parc.maintenance</field>
+            <field name="prefix">MAINT</field>
+            <field name="padding">4</field>
+            <field name="company_id" eval="False"/>
+        </record>
+    </data>
+</odoo>

@@ -1,0 +1,64 @@
+<odoo>
+    <!-- Vue form pour les licences -->
+    <record id="view_licence_form" model="ir.ui.view">
+        <field name="name">parc.licence.form</field>
+        <field name="model">parc.licence</field>
+        <field name="arch" type="xml">
+            <form string="Licence">
+                <sheet>
+                    <group>
+                        <field name="name"/>
+                        <field name="logiciel_id"/>
+                        <field name="equipement_id"/>
+                        <field name="client_id"/>
+                    </group>
+                    <group>
+                        <field name="date_achat"/>
+                        <field name="date_expiration"/>
+                        <field name="type_licence"/>
+                        <field name="nb_utilisateurs"/>
+                        <field name="active"/>
+                    </group>
+                    <notebook>
+                        <page string="Informations">
+                            <group>
+                                <field name="cle_activation"/>
+                                <field name="notes"/>
+                            </group>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- Vue liste pour les licences -->
+    <record id="view_licence_tree" model="ir.ui.view">
+        <field name="name">parc.licence.tree</field>
+        <field name="model">parc.licence</field>
+        <field name="arch" type="xml">
+            <list string="Licences">
+                <field name="name"/>
+                <field name="logiciel_id"/>
+                <field name="client_id"/>
+                <field name="date_expiration"/>
+                <field name="type_licence"/>
+                <field name="active"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- Action pour les licences -->
+    <record id="action_licence" model="ir.actions.act_window">
+        <field name="name">Licences</field>
+        <field name="res_model">parc.licence</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+    <!-- Menu pour les licences -->
+    <menuitem id="menu_parc_licences"
+              name="Licences"
+              parent="menu_parc_equipements"
+              action="action_licence"
+              sequence="30"/>
+</odoo>

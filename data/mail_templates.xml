@@ -1,0 +1,34 @@
+<odoo>
+    <data noupdate="1">
+        <record id="email_template_contrat_expiration" model="mail.template">
+            <field name="name">Alerte contrat expirant</field>
+            <field name="model_id" ref="model_parc_contrat_service"/>
+            <field name="subject">ATTENTION: Contrat ${object.name} expirant le ${format_date(object.date_fin)}</field>
+            <field name="email_from">${user.email_formatted}</field>
+            <field name="partner_to">${user.partner_id.id}</field>
+            <field name="body_html" type="html">
+<div style="background:#F0F0F0;color:#515166;padding:10px;">
+    <div style="padding:15px;background:white;">
+        <h3>Alerte: Contrat arrivant à expiration</h3>
+        <p>Bonjour ${user.name},</p>
+        <p>Le contrat <strong>${object.name}</strong> avec ${object.client_id.name} arrive à expiration.</p>
+        <ul>
+            <li><strong>Client:</strong> ${object.client_id.name}</li>
+            <li><strong>Date de début:</strong> ${format_date(object.date_debut)}</li>
+            <li><strong>Date de fin:</strong> ${format_date(object.date_fin)}</li>
+            <li><strong>Montant:</strong> ${format_amount(object.montant, object.currency_id)}</li>
+        </ul>
+        <p>Nous vous recommandons de contacter le client pour discuter du renouvellement de ce contrat.</p>
+        <div style="margin: 16px 0px 16px 0px; text-align: center;">
+            <a href="/web#id=${object.id}&amp;model=parc.contrat.service&amp;view_type=form" 
+               style="background-color: #875A7B; padding: 8px 16px 8px 16px; text-decoration: none; color: #fff; border-radius: 5px;">
+                Voir le contrat
+            </a>
+        </div>
+        <p>Cordialement,<br/>L'équipe InfoGérance</p>
+    </div>
+</div>
+            </field>
+        </record>
+    </data>
+</odoo>
