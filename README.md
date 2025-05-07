@@ -102,29 +102,27 @@ Le module implémente une gestion fine des droits d'accès:
 - **Techniciens**: création et modification des interventions, consultation des équipements
 - **Responsables**: accès complet à toutes les fonctionnalités et données
 
+## Portail Client
+
+Le module dispose d'une interface portail permettant aux clients de consulter leurs équipements, contrats et tickets.
+
+![Portail Gestion Parc Informatique](./screenshot/image1.png)
+
+### Accès au portail
+
+Pour qu'un utilisateur puisse accéder au portail, il doit obligatoirement appartenir au groupe **Types d'utilisateur / Portail**. Pour configurer cet accès :
+
+1. Allez dans **Paramètres → Utilisateurs & Sociétés → Utilisateurs**
+2. Créez ou modifiez un utilisateur
+3. Dans l'onglet **Accès**, assurez-vous que l'option **Portail** est cochée
+4. Associez cet utilisateur au partenaire/client concerné
+
+Les utilisateurs du portail auront uniquement accès à leurs propres données (équipements, contrats, tickets) selon les règles de sécurité définies dans le module.
+
 ## Documentation technique
 La structure du module suit les standards Odoo avec:
 - Modèles de données (models/)
 - Vues XML (views/)
 - Contrôleurs pour le portail web (controllers/)
 - Règles de sécurité (security/)
-- Assistants pour les processus complexes (wizards/)
 - Données de démonstration (data/)
-
-## Développement et contributions
-Le code source est disponible sur GitHub. Les contributions sont bienvenues via pull requests.
-
-## Support
-Pour toute question technique ou demande de support:
-- Ouvrez une issue sur GitHub
-- Contactez l'équipe de développement via l'adresse support@noushi-services-it.com
-
-## Auteur
-Développé par **Noushi Services IT**
-
-## Licence
-Ce module est distribué sous licence [LGPL-3](https://www.gnu.org/licenses/lgpl-3.0.html)
-
----
-
-© 2025 Noushi Services IT - Tous droits réservés
