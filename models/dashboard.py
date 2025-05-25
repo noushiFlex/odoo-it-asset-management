@@ -16,6 +16,11 @@ class MaintenanceDashboard(models.Model):
     revenu_contrats = fields.Float('Revenus contrats', compute='_compute_statistiques')
     taux_pannes_recurrentes = fields.Float('Taux de pannes récurrentes %', compute='_compute_statistiques')
     
+    # Relations pour afficher des données dans le tableau de bord
+    equipement_ids = fields.Many2many('parc.equipement', string='Équipements', compute='_compute_equipements')
+    contrat_ids = fields.Many2many('parc.contrat.service', string='Contrats', compute='_compute_contrats')
+    maintenance_ids = fields.Many2many('parc.maintenance', string='Maintenances', compute='_compute_maintenances')
+    
     @api.depends('date_debut', 'date_fin')
     def _compute_statistiques(self):
         for record in self:
@@ -52,3 +57,25 @@ class MaintenanceDashboard(models.Model):
             
             equipements_recurrents = [id for id, count in equipements_count.items() if count > 1]
             record.taux_pannes_recurrentes = (len(equipements_recurrents) / record.nb_equipements * 100) if record.nb_equipements else 0
+    
+    @api.depends('date_debut', 'date_fin')
+    def _compute_equipements(self):
+        for record in self:
+            record.equipement_ids = self.env['parc.equipement'].search([])
+    
+    @api.depends('date_debut', 'date_fin')
+    def _compute_contrats(self):
+        for record in self:
+            record.contrat_ids = self.env['parc.contrat.service'].search([
+                '|', 
+                ('date_fin', '=', False),
+                ('date_fin', '>=', fields.Date.today())
+            ])
+    
+    @api.depends('date_debut', 'date_fin')
+    def _compute_maintenances(self):
+        for record in self:
+            record.maintenance_ids = self.env['parc.maintenance'].search([
+                ('date_intervention', '>=', record.date_debut),
+                ('date_intervention', '<=', record.date_fin)
+            ])

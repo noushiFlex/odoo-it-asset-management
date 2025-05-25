@@ -7,11 +7,8 @@
             <form string="Client du parc informatique">
                 <sheet>
                     <div class="oe_button_box" name="button_box">
-                        <button name="action_view_equipements" type="object" class="oe_stat_button" icon="fa-desktop">
-                            <field name="equipement_count" string="Équipements" widget="statinfo"/>
-                        </button>
-                        <button name="action_view_contrats" type="object" class="oe_stat_button" icon="fa-file-contract">
-                            <field name="contrat_count" string="Contrats" widget="statinfo"/>
+                        <button name="action_view_contrats" type="object" class="oe_stat_button" icon="fa-file-text-o">
+                            <field name="contrat_count" widget="statinfo" string="Contrats"/>
                         </button>
                     </div>
                     <field name="image_1920" widget="image" class="oe_avatar" options='{"preview_image": "image_128"}'/>

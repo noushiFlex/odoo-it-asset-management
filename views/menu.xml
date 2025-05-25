@@ -4,9 +4,15 @@
     
     <!-- Sous-menus principaux -->
     <menuitem id="menu_parc_dashboard" name="Tableau de bord" parent="menu_parc_informatique" sequence="1"/>
+    <menuitem id="menu_parc_clients" name="Clients" parent="menu_parc_informatique" sequence="5"/>
     <menuitem id="menu_parc_equipements" name="Équipements" parent="menu_parc_informatique" sequence="10"/>
+    <menuitem id="menu_parc_logiciels" name="Logiciels &amp; Licences" parent="menu_parc_informatique" sequence="15"/>
     <menuitem id="menu_parc_contrats" name="Contrats" parent="menu_parc_informatique" sequence="20"/>
     <menuitem id="menu_parc_maintenances" name="Maintenances" parent="menu_parc_informatique" sequence="30"/>
+    
+    <!-- Sous-menu pour Logiciels & Licences -->
+    <menuitem id="menu_parc_logiciels_list" name="Logiciels" parent="menu_parc_logiciels" action="action_logiciel" sequence="10"/>
+    <menuitem id="menu_parc_licences_list" name="Licences" parent="menu_parc_logiciels" action="action_licence" sequence="20"/>
     
     <!-- Ajout du menu Configuration -->
     <menuitem id="menu_parc_configuration" name="Configuration" parent="menu_parc_informatique" sequence="100"/>

@@ -1,6 +1,6 @@
 {
-    'name': "Gestion Parc Informatique",
-    'summary': "Module de gestion de parc informatique et d'infogérance",
+    'name': "Gestion Parc Informatique Pro",
+    'summary': "Module de gestion de parc informatique pour techniciens",
     'description': """
         Module permettant de gérer:
         - Le parc informatique des clients
@@ -8,20 +8,18 @@
         - La facturation périodique
         - L'historique des interventions
     """,
-    'author': "Noushi Services IT",
-    'website': "",
-    'category': 'Services',
-    'version': '1.0',
+    'author': "Your Company Name",
+    'website': "https://www.yourcompany.com",
+    'category': 'Services/IT Management',
+    'version': '1.0.1',
     'depends': [
         'base',
         'helpdesk',
         'sale',
         'account',
-        
         'hr',
-        'website',
         'board',
-        'mail',  # Ajoutez cette dépendance
+        'mail',
     ],
     'data': [
         'security/security.xml',
@@ -29,7 +27,6 @@
         'data/sequence.xml',
         'data/cron.xml',
         'data/mail_templates.xml',
-        'data/demo.xml',  # Ajoutez cette ligne
         'views/menu.xml',
         'views/client_views.xml',  
         'views/equipement_views.xml',
@@ -42,16 +39,12 @@
         'views/hr_poste_technique_views.xml', 
         'views/technicien_views.xml',        
         'views/dashboard.xml',
-        'views/portal_templates.xml',
         'reports/contrat_report.xml',
         'views/logiciel_views.xml',
         'views/licence_views.xml',
         'views/site_client_views.xml',
     ],
-    'demo': [
-        'data/demo.xml',
-    ],
+    'demo': [],
     'installable': True,
     'application': True,
-    'auto_install': False,
 }

@@ -13,6 +13,7 @@
                 <filter string="Opérationnel" name="operationnel" domain="[('etat', '=', 'operationnel')]"/>
                 <filter string="En maintenance" name="maintenance" domain="[('etat', '=', 'maintenance')]"/>
                 <filter string="En panne" name="panne" domain="[('etat', '=', 'panne')]"/>
+                <filter string="Garantie expirée" name="garantie_expiree" domain="[('fin_garantie', '&lt;', context_today().strftime('%Y-%m-%d'))]"/>
                 <group expand="0" string="Regrouper par">
                     <filter string="Type d'équipement" name="type" context="{'group_by': 'type_equipement'}"/>
                     <filter string="État" name="etat" context="{'group_by': 'etat'}"/>
@@ -92,7 +93,7 @@
         <field name="name">parc.equipement.graph</field>
         <field name="model">parc.equipement</field>
         <field name="arch" type="xml">
-            <graph string="Distribution par type">
+            <graph string="Distribution par type" type="pie">
                 <field name="type_equipement" type="row"/>
                 <field name="id" type="measure" operator="count"/>
             </graph>
@@ -120,13 +121,121 @@
                 <field name="client_id" type="row"/>
                 <field name="type_equipement" type="col"/>
                 <field name="id" type="measure" operator="count"/>
+                <field name="valeur_achat" type="measure"/>
             </pivot>
+        </field>
+    </record>
+
+    <!-- Vue dashboard principal avec cartes d'indicateurs -->
+    <record id="parc_dashboard_view" model="ir.ui.view">
+        <field name="name">parc.dashboard.view</field>
+        <field name="model">parc.dashboard</field>
+        <field name="arch" type="xml">
+            <form string="Tableau de bord" create="false" edit="false">
+                <sheet>
+                    <div class="oe_title">
+                        <h1>Tableau de bord du parc informatique</h1>
+                    </div>
+                    
+                    <!-- Filtres de date -->
+                    <group>
+                        <field name="date_debut"/>
+                        <field name="date_fin"/>
+                    </group>
+                    
+                    <!-- KPIs Principaux -->
+                    <div class="row mt16 mb16">
+                        <!-- Équipements -->
+                        <div class="col-lg-3 col-md-6">
+                            <div class="card">
+                                <div class="card-body text-center">
+                                    <h2 class="mb-0"><field name="nb_equipements"/></h2>
+                                    <p class="mb-0">Équipements</p>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Maintenances -->
+                        <div class="col-lg-3 col-md-6">
+                            <div class="card">
+                                <div class="card-body text-center">
+                                    <h2 class="mb-0"><field name="nb_maintenances"/></h2>
+                                    <p class="mb-0">Interventions</p>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Temps moyen -->
+                        <div class="col-lg-3 col-md-6">
+                            <div class="card">
+                                <div class="card-body text-center">
+                                    <h2 class="mb-0"><field name="temps_moyen_resolution"/> h</h2>
+                                    <p class="mb-0">Temps moyen d'intervention</p>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Taux pannes récurrentes -->
+                        <div class="col-lg-3 col-md-6">
+                            <div class="card">
+                                <div class="card-body text-center">
+                                    <h2 class="mb-0"><field name="taux_pannes_recurrentes" widget="percentage"/>%</h2>
+                                    <p class="mb-0">Pannes récurrentes</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Graphiques et analyses -->
+                    <notebook>
+                        <page string="État du parc">
+                            <field name="equipement_ids" widget="many2many" mode="kanban"
+                                  domain="[('etat', '!=', 'retire')]" context="{'search_default_group_by_etat': 1}">
+                                <kanban>
+                                    <field name="name"/>
+                                    <field name="client_id"/>
+                                    <field name="etat"/>
+                                    <templates>
+                                        <t t-name="kanban-box">
+                                            <div t-attf-class="oe_kanban_card oe_kanban_global_click">
+                                                <div class="oe_kanban_details">
+                                                    <strong><field name="name"/></strong>
+                                                    <div><field name="client_id"/></div>
+                                                    <div><field name="etat"/></div>
+                                                </div>
+                                            </div>
+                                        </t>
+                                    </templates>
+                                </kanban>
+                            </field>
+                        </page>
+                        <page string="Contrats en expiration">
+                            <field name="contrat_ids" widget="many2many" mode="tree"
+                                  domain="[('date_fin', '!=', False), ('date_fin', '&gt;=', context_today().strftime('%Y-%m-%d')), 
+                                         ('date_fin', '&lt;=', (context_today() + datetime.timedelta(days=30)).strftime('%Y-%m-%d'))]">
+                                <!-- Use 'editable="bottom"' to show it belongs to the inner model -->
+                                <tree editable="bottom">
+                                    <field name="name"/>
+                                    <field name="client_id"/>
+                                    <field name="date_fin"/>
+                                    <field name="montant"/>
+                                </tree>
+                            </field>
+                        </page>
+                        <page string="Analyse">
+                            <field name="maintenance_ids" widget="many2many" mode="graph">
+                                <graph>
+                                    <field name="technicien_id"/>
+                                    <field name="temps_passe" type="measure"/>
+                                </graph>
+                            </field>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
         </field>
     </record>
 
     <!-- Action pour le tableau de bord -->
     <record id="action_parc_dashboard" model="ir.actions.act_window">
-        <field name="name">Tableau de bord</field>
+        <field name="name">Équipements</field>
         <field name="res_model">parc.equipement</field>
         <field name="view_mode">kanban,graph,pivot,list,form</field>
         <field name="search_view_id" ref="parc_equipement_search_view"/>
@@ -139,6 +248,15 @@
             </p>
         </field>
         <field name="context">{'search_default_operationnel': 1, 'search_default_group_by_etat': 1}</field>
+    </record>
+
+    <!-- Action pour le nouveau tableau de bord -->
+    <record id="action_parc_new_dashboard" model="ir.actions.act_window">
+        <field name="name">Tableau de bord</field>
+        <field name="res_model">parc.dashboard</field>
+        <field name="view_mode">form</field>
+        <field name="view_id" ref="parc_dashboard_view"/>
+        <field name="target">current</field>
     </record>
 
     <!-- IMPORTANT: Définir toutes les actions AVANT de les référencer -->
@@ -154,52 +272,8 @@
         <field name="context">{}</field>
     </record>
 
-    <!-- Ajouter un KPI pour les contrats expirant bientôt (kanban) -->
-    <record id="action_contrats_expiration_kpi" model="ir.actions.act_window">
-        <field name="name">Contrats expirant bientôt</field>
-        <field name="res_model">parc.contrat.service</field>
-        <field name="view_mode">kanban</field>
-        <field name="domain" eval="[
-            ('date_fin', '>=', datetime.now().strftime('%Y-%m-%d')),
-            ('date_fin', '&lt;=', (datetime.now() + timedelta(days=30)).strftime('%Y-%m-%d'))
-        ]"/>
-        <field name="context">{'count_only': True}</field>
-    </record>
-
-    <!-- Menu pour accéder au tableau de bord -->
-    <menuitem id="menu_parc_dashboard_view" name="Tableau de bord" parent="menu_parc_dashboard" action="action_parc_dashboard"/>
-
-    <!-- APRÈS avoir défini toutes les actions, vous pouvez les référencer -->
-    <!-- Ajouter cette vue pour intégrer avec le tableau de bord Odoo -->
-    <record id="parc_dashboard_view_kpi" model="ir.ui.view">
-        <field name="name">parc.dashboard.kpi</field>
-        <field name="model">board.board</field>
-        <field name="arch" type="xml">
-            <form string="Tableau de bord Parc IT">
-                <board style="1">
-                    <column>
-                        <action name="%(action_parc_dashboard)d" string="Équipements par état" />
-                        <action name="%(action_parc_maintenance)d" string="Dernières maintenances" />
-                        <action name="%(action_contrats_expiration)d" string="Contrats expirant bientôt"/>
-                    </column>
-                    <column>
-                        <!-- Créer des actions internes plutôt que de référencer directement -->
-                        <action name="%(action_helpdesk_ticket_parc)d" string="Tickets d'assistance" />
-                        <!-- Utilisez une action interne pour les factures également -->
-                        <action name="%(action_parc_contrat_service)d" string="Contrats de service" />
-                    </column>
-                </board>
-            </form>
-        </field>
-    </record>
-
-    <record id="action_parc_dashboard_kpi" model="ir.actions.act_window">
-        <field name="name">Tableau de bord global</field>
-        <field name="res_model">board.board</field>
-        <field name="view_mode">form</field>
-        <field name="view_id" ref="parc_dashboard_view_kpi"/>
-    </record>
-
-    <!-- Menu supplémentaire pour le tableau de bord global -->
-    <menuitem id="menu_parc_dashboard_kpi" name="Tableau de bord global" parent="menu_parc_dashboard" action="action_parc_dashboard_kpi" sequence="1"/>
+    <!-- Menu pour accéder aux différents tableaux de bord -->
+    <menuitem id="menu_parc_dashboard_view" name="Vue d'ensemble" parent="menu_parc_dashboard" action="action_parc_new_dashboard" sequence="1"/>
+    <menuitem id="menu_parc_dashboard_equipments" name="Équipements" parent="menu_parc_dashboard" action="action_parc_dashboard" sequence="5"/>
+    <menuitem id="menu_parc_dashboard_expiring" name="Contrats expirants" parent="menu_parc_dashboard" action="action_contrats_expiration" sequence="10"/>
 </odoo>
